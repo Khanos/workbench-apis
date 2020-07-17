@@ -1,6 +1,5 @@
 const Twitter = require('twitter-lite');
 const path = require('path');
-const async = require('async');
 const errorHandler = require(`${path.resolve()}/api/utils/ErrorHandler`);
 const twitterCredentials = require(`${path.resolve()}/.credentials/twitter_oauth_credentials.json`);
 const oauthClient = new Twitter({
