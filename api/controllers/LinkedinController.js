@@ -28,6 +28,20 @@ module.exports = {
         }
     },
 
+    getLoginId: async (req, res) => {
+        try {
+            let options = {
+                method: 'GET',
+                url: 'https://api.linkedin.com/v2/adAccountsV2?q=search&count=10',
+                headers: { Authorization: `Bearer ${linkedinCredentials.testing.access_token}` }
+            };
+            let response = await axios(options)
+            return res.json(response.data);
+        } catch (error) {
+            return errorHandler(res, error);
+        }
+    },
+
     getTokenInfo: async (req, res) => {
         try {
             const data =  {
