@@ -1,15 +1,13 @@
-require('dotenv').config();
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const favicon = require('serve-favicon');
 const routesIndex = require('./api/routes');
-const port = process.env.PORT || 3000;
-const host = process.env.HOST || 'localhost';
 const env = require(`${path.resolve()}/config/env.json`);
 const app = express();
 
+// Configs
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/img/favicon.ico'));
@@ -18,12 +16,16 @@ app.use(express.static('./public'));
 app.use('/api', routesIndex);
 // Error handling
 app.use((error, req, res, next) => {
-    let response = {
-      status: error.status || 500,
-      message: `Ups, something bad happened: ${error.message}` || 'Ups, something bad happened: Internal Server Error',
-      error: error
-    };
-    return res.render('error.ejs', response);
+    if(error){
+        let response = {
+            status: error.status || 500,
+            message: `Ups, something bad happened: ${error.message}` || 'Ups, something bad happened: Internal Server Error',
+            error: error
+        };
+        return res.render('error.ejs', response);
+    } else {
+        next();
+    }
 });
 // Main view
 app.get('/', (req, res) => {
@@ -34,8 +36,8 @@ let server = https.createServer({
     cert: fs.readFileSync(env.ssl.cert),
     passphrase: env.ssl.passphrase
 }, app)
-.listen(port, () => {
+.listen(env.port, env.host, () => {
     console.log('The app is running...');
-    console.log(`https://${host}:${port}`);
+    console.log(`https://${env.host}:${env.port}`);
 });
 module.exports = server;
