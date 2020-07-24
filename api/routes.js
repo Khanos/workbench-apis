@@ -6,7 +6,7 @@ let LinkedinController = require('./controllers/LinkedinController');
 router.get('/twitter', TwitterController.index);
 router.get('/twitter/getLogin', TwitterController.getLogin);
 router.get('/twitter/callback', TwitterController.callback);
-
+router.get('/twitter/getAdsAccounts', TwitterController.getAdsAccounts);
 // Linkedin Routes
 router.get('/linkedin', LinkedinController.index);
 router.get('/linkedin/getLogin', LinkedinController.getLogin);

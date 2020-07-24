@@ -1,7 +1,10 @@
 const path = require('path');
 const errorHandler = require(`${path.resolve()}/api/utils/ErrorHandler`);
+const responseHandler = require(`${path.resolve()}/api/utils/ResponseHandler`);
+const axios = require('axios');
 const twitterCredentials = require(`${path.resolve()}/.credentials/twitter_oauth_credentials.json`);
 const TwitterOAuth  = require('twitter-auth-await').TwitterOAuth;
+const TwitterAdsAPI = require('twitter-ads');
 const twitterClient = new TwitterOAuth({
     consumerKey: twitterCredentials.oauth_consumer_key,
     consumerSecret: twitterCredentials.oauth_consumer_secret,
@@ -10,7 +13,7 @@ const twitterClient = new TwitterOAuth({
 
 module.exports = {
     index: (req, res) => {
-        return res.send('Hola mundo!');
+        return responseHandler(res, 'Hola mundo from TwitterController');
     },
     getLogin: async (req, res) => {
         try{
@@ -24,7 +27,25 @@ module.exports = {
         try{
             const { oauth_token: oauthToken, oauth_verifier: oauthVerifier } = req.query;
             let accessToken = await twitterClient.getAccessToken(oauthToken, oauthVerifier);
-            return res.send(accessToken);
+            return responseHandler(res, accessToken);
+        }catch(error){
+            return errorHandler(res, error);
+        }
+    },
+    getAdsAccounts: async (req, res) => {
+        try{
+            let twitterAdsClient = new TwitterAdsAPI({
+                consumer_key: twitterCredentials.oauth_consumer_key,
+                consumer_secret: twitterCredentials.oauth_consumer_secret,
+                access_token: twitterCredentials.testing.accessToken,
+                access_token_secret: twitterCredentials.testing.accessTokenSecret,
+                sandbox: false,
+                api_version: '7'
+            });
+            twitterAdsClient.get('accounts', function(error, resp, body) {
+                if (error) return errorHandler(res, error);
+                return responseHandler(res, body);
+            });
         }catch(error){
             return errorHandler(res, error);
         }

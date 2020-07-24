@@ -2,11 +2,12 @@ const path = require('path');
 const qs = require('qs');
 const axios = require('axios');
 const errorHandler = require(`${path.resolve()}/api/utils/ErrorHandler`);
+const responseHandler = require(`${path.resolve()}/api/utils/ResponseHandler`);
 const linkedinCredentials = require(`${path.resolve()}/.credentials/linkedin_oauth_credentials.json`);
 
 module.exports = {
     index: (req, res) => {
-        return res.send('Hello from Linkedin Controller');
+        return responseHandler(res, 'Hola mundo from LinkedinController');
     },
 
     getLogin: async (req, res) => {
@@ -36,7 +37,7 @@ module.exports = {
                 headers: { Authorization: `Bearer ${linkedinCredentials.testing.access_token}` }
             };
             let response = await axios(options)
-            return res.json(response.data);
+            return responseHandler(res, response.data);
         } catch (error) {
             return errorHandler(res, error);
         }
@@ -56,7 +57,7 @@ module.exports = {
                 data: qs.stringify(data)
             };
             let response = await axios(options);
-            return res.json(response.data);
+            return responseHandler(res, response.data);
         } catch (error) {
             let customError = new Error(error.message);
             if(error.response){
@@ -84,7 +85,7 @@ module.exports = {
                 }
             };
             let response = await axios(options);
-            return res.json(response.data);
+            return responseHandler(res, response.data);
         } catch (error) {
             let customError = new Error(error.message);
             if(error.response){

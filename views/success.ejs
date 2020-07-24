@@ -1,0 +1,40 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Khanos Backend</title>
+  <link type="text/css" rel="stylesheet" href="/styles/bootstrap.min.css">
+  <link type="text/css" rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+  <section>
+    <div class="container">
+      <div class="row h-100">
+        <div class="col my-auto">
+          <h1>This is a Workbench for APIS.</h1>
+          <h3>Made with <span id="love">love</span>.</h3>
+          <div class="jumbotron">
+            <h1 class="display-4"><%=`Success ${status}`%> 🥳</h1>
+            <p class="lead"><%=message%></p>
+            <p class="lead">
+              <a class="btn btn-primary btn-lg" href="/" role="button">Go Home</a>
+            </p>
+            <div class="container error-console">
+              <p><%=data%></p>
+            </div>
+          </div>
+          <p class="text-right">This is a small fun project, you can check on <a
+              href="https://github.com/Khanos/">GitHub</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script type="text/javascript" src="/js/jquery.slim.min.js"></script>
+  <script type="text/javascript" src="/js/popper.min.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</body>
+
+</html>
