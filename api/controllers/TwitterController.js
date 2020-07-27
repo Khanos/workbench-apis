@@ -9,12 +9,14 @@ const twitterClient = new TwitterOAuth({
     consumerKey: twitterCredentials.oauth_consumer_key,
     consumerSecret: twitterCredentials.oauth_consumer_secret,
     callback: twitterCredentials.oauth_callback.dev,
-  });
+});
 
 module.exports = {
+
     index: (req, res) => {
         return responseHandler(res, 'Hola mundo from TwitterController');
     },
+
     getLogin: async (req, res) => {
         try{
             const redirectUri = await twitterClient.getRedirectAuthURI();
@@ -23,15 +25,7 @@ module.exports = {
             return errorHandler(res, error);
         }
     },
-    callback: async (req, res) => {
-        try{
-            const { oauth_token: oauthToken, oauth_verifier: oauthVerifier } = req.query;
-            let accessToken = await twitterClient.getAccessToken(oauthToken, oauthVerifier);
-            return responseHandler(res, accessToken);
-        }catch(error){
-            return errorHandler(res, error);
-        }
-    },
+
     getAdsAccounts: async (req, res) => {
         try{
             let twitterAdsClient = new TwitterAdsAPI({
@@ -49,5 +43,16 @@ module.exports = {
         }catch(error){
             return errorHandler(res, error);
         }
+    },
+
+    callback: async (req, res) => {
+        try{
+            const { oauth_token: oauthToken, oauth_verifier: oauthVerifier } = req.query;
+            let accessToken = await twitterClient.getAccessToken(oauthToken, oauthVerifier);
+            return responseHandler(res, accessToken);
+        }catch(error){
+            return errorHandler(res, error);
+        }
     }
+
 }

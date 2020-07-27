@@ -3,6 +3,6 @@ module.exports = function(res, data) {
         status: 200,
         message: `This is looking awesome`,
         data: JSON.stringify(data)
-      };
+    };
     return res.render('success.ejs', response);
 }
