@@ -32,7 +32,7 @@ module.exports = {
                 consumer_key: twitterCredentials.oauth_consumer_key,
                 consumer_secret: twitterCredentials.oauth_consumer_secret,
                 access_token: twitterCredentials.testing.accessToken,
-                access_token_secret: twitterCredentials.testing.accesTokenSecret,
+                access_token_secret: twitterCredentials.testing.accessTokenSecret,
                 sandbox: false,
                 api_version: '7'
             });
