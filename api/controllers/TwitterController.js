@@ -32,14 +32,19 @@ module.exports = {
                 consumer_key: twitterCredentials.oauth_consumer_key,
                 consumer_secret: twitterCredentials.oauth_consumer_secret,
                 access_token: twitterCredentials.testing.accessToken,
-                access_token_secret: twitterCredentials.testing.accessTokenSecret,
+                access_token_secret: twitterCredentials.testing.accesTokenSecret,
                 sandbox: false,
                 api_version: '7'
             });
-            twitterAdsClient.get('accounts', function(error, resp, body) {
-                if (error) return errorHandler(res, error);
-                return responseHandler(res, body);
-            });
+            let promiseAdsClient = () => {
+                return new Promise((resolve, reject) => {
+                twitterAdsClient.get('accounts', function(error, resp, body) {
+                    if (error) return reject(error);
+                    return resolve(body);
+                });
+            })};
+            let result = await promiseAdsClient();
+            return responseHandler(res, result);
         }catch(error){
             return errorHandler(res, error);
         }
