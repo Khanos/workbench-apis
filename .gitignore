@@ -64,3 +64,4 @@ typings/
 .credentials
 
 config/ssl
+config/env.json
