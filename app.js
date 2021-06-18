@@ -16,6 +16,7 @@ app.use(express.static('./public'));
 app.use('/api', routesIndex);
 // Error handling
 app.use((error, req, res, next) => {
+    req.env = env;
     if(error){
         let response = {
             status: error.status || 500,
