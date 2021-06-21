@@ -16,5 +16,6 @@ router.get('/linkedin/getTokenInfo', LinkedinController.getTokenInfo);
 router.get('/linkedin/callback', LinkedinController.callback);
 // Stripe Routes
 router.get('/stripe', StripeController.index);
+router.post('/stripe/checkout', StripeController.checkout);
 
 module.exports = router;

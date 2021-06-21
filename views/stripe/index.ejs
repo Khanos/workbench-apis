@@ -1,0 +1,81 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>@Khanos Fun Stuff</title>
+	<link type="text/css" rel="stylesheet" href="/styles/bootstrap.min.css">
+	<link type="text/css" rel="stylesheet" href="/dependencies/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link type="text/css" rel="stylesheet" href="/styles/main.css">
+	<script src="https://checkout.stripe.com/checkout.js"></script>
+	<script>
+		var stripePublicKey = "<%= stripepublickey %>";
+	</script>
+</head>
+
+<body>
+	<section>
+		<div class="container">
+			<div class="row">
+				<div class="col my-auto">
+					<h1 class="text-center">hello from <span id="love">stripe/index.ejs</span></h1>
+					<p class="text-right">This is a small fun project, you can view it on <a
+							href="https://github.com/Khanos/workbench-apis">GitHub</a></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						<label for="InputCharge">Enter a charge value</label>
+						<input type="email" class="form-control" id="InputCharge" aria-describedby="emailHelp"
+							placeholder="Enter a charge value">
+						<small id="chargeHelp" class="form-text text-muted">This is just a simple test.</small>
+					</div>
+					<button type="button" onclick="payHandler()" class="btn btn-primary">Pay</button>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script>
+		var price = 0;
+		var stripeHandler = StripeCheckout.configure({
+			key: stripePublicKey,
+			locale: 'en',
+			token: function(token){
+				fetch('/api/stripe/checkout', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json'
+					},
+					body: JSON.stringify({
+						stripeTokenId: token.id,
+						price: price
+					})
+				}).then(function(response){
+					return response.json()
+				}).then(function(data){
+					alert(data.message);
+				}).catch(function(err){
+					alert('Payment fail')
+				});
+			}
+		});
+		var payHandler = function() {
+			price = parseFloat(document.getElementById('InputCharge').value) * 100;
+			if(isNaN(price)){
+				return false;
+			}
+			console.log('Handle pay: ', price);
+			stripeHandler.open({
+				amount: price
+			});
+		}
+	</script>
+	<script type="text/javascript" src="/js/jquery.slim.min.js"></script>
+	<script type="text/javascript" src="/js/popper.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</body>
+
+</html>
