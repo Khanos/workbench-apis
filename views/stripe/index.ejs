@@ -8,7 +8,7 @@
 	<link type="text/css" rel="stylesheet" href="/styles/bootstrap.min.css">
 	<link type="text/css" rel="stylesheet" href="/dependencies/font-awesome-4.7.0/css/font-awesome.min.css">
 	<link type="text/css" rel="stylesheet" href="/styles/main.css">
-	<script src="https://checkout.stripe.com/checkout.js"></script>
+	<script src="https://js.stripe.com/v3/"></script>
 	<script>
 		var stripePublicKey = "<%= stripepublickey %>";
 	</script>
@@ -20,8 +20,6 @@
 			<div class="row">
 				<div class="col my-auto">
 					<h1 class="text-center">hello from <span id="love">stripe/index.ejs</span></h1>
-					<p class="text-right">This is a small fun project, you can view it on <a
-							href="https://github.com/Khanos/workbench-apis">GitHub</a></p>
 				</div>
 			</div>
 			<div class="row">
@@ -38,38 +36,46 @@
 		</div>
 	</section>
 	<script>
-		var price = 0;
-		var stripeHandler = StripeCheckout.configure({
-			key: stripePublicKey,
-			locale: 'en',
-			token: function(token){
-				fetch('/api/stripe/checkout', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'Accept': 'application/json'
-					},
-					body: JSON.stringify({
-						stripeTokenId: token.id,
-						price: price
-					})
-				}).then(function(response){
-					return response.json()
-				}).then(function(data){
-					alert(data.message);
-				}).catch(function(err){
-					alert('Payment fail')
-				});
+		(function(){
+			if(window.location.href.split('status=').length > 1){
+				if(window.location.href.split('status=')[1] === 'success'){
+					alert("Payment Successfully")
+				}
+				if(window.location.href.split('status=')[1] === 'cancel'){
+					alert("Payment Canceled")
+				}
 			}
-		});
+		})();
+		var price = 0;
 		var payHandler = function() {
+			var stripe = Stripe(stripePublicKey);
 			price = parseFloat(document.getElementById('InputCharge').value) * 100;
 			if(isNaN(price)){
 				return false;
 			}
 			console.log('Handle pay: ', price);
-			stripeHandler.open({
-				amount: price
+			fetch('stripe/checkout', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json'
+				},
+				body: JSON.stringify({
+					price: price,
+					sourceUrl: encodeURIComponent(window.location.href.split('?')[0])
+				})
+			}).then(function(response) {
+				return response.json();
+			}).then(function(data){
+				console.log(data);
+				return stripe.redirectToCheckout({ sessionId: data.id });
+			}).then(function(result) {
+				if (result.error) {
+					alert(result.error.message);
+				}
+				console.log(result);
+			}).catch(function(error){
+				alert('Payment Fail: ', error)
 			});
 		}
 	</script>

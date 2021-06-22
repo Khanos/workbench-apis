@@ -1,6 +1,6 @@
 const path = require('path');
 const env = require(`${path.resolve()}/config/env.json`);
-const stripe = require('stripe')(env.stripe.secret_key);
+const StripeService = require('../services/StripeService');
 
 module.exports = {
   index: (req, res) => {
@@ -9,18 +9,22 @@ module.exports = {
       stripepublickey: env.stripe.public_key
     });
   },
-  checkout: (req, res) => {
-    console.log('Response:', req.body)
-    stripe.charges.create({
-      amount: req.body.price,
-      source: req.body.stripeTokenId,
-      currency: 'usd'
-    }).then(function(response){
-      console.log('Payment successfully: ', response.receipt_url);
-      return res.json({message: 'Payment successfully'})
-    }).catch(function(err) {
-      console.log('Payment fail')
+  checkout: async (req, res) => {
+    console.log('Response:', req.body);
+    const options = {
+      success_url: `${decodeURIComponent(req.body.sourceUrl)}?status=success`,
+      cancel_url: `${decodeURIComponent(req.body.sourceUrl)}?status=cancel`,
+      payment_method_types: ['card'],
+      currency: 'usd',
+      productData: 'LookAtMe Services',
+      price: req.body.price,
+      mode: 'payment',
+      locale: 'en'
+    }
+    const session = await StripeService.createSession(options);
+    if(session.error){
       return res.status(500).end();
-    });
+    }
+    return res.json({ id: session.id });
   }
 }
