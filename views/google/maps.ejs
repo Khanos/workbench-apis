@@ -1,0 +1,46 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>@Khanos Fun Stuff</title>
+	<link type="text/css" rel="stylesheet" href="/styles/bootstrap.min.css">
+	<link type="text/css" rel="stylesheet" href="/dependencies/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link type="text/css" rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+	<section>
+		<div class="container">
+			<div class="row">
+				<div class="col my-auto">
+					<h1 class="text-center">hello from <span id="love">google/maps.ejs</span></h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						<label for="auto-address">Enter a place value</label>
+						<input type="text" class="form-control" id="auto-address" aria-describedby="auto-address"
+							placeholder="Enter a place value">
+						<small id="auto-address-help" class="form-text text-muted">This is just a simple test.</small>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script>
+		let autoComplete;
+    function initAutocomplete() {
+      autoComplete = new google.maps.places.Autocomplete(document.getElementById('auto-address'), {
+        // types:[],
+        // componentRestrictions: {},
+        fields: ['place_id', 'geometry', 'name']
+      });
+    }
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=<%= mapsApiKey %>&libraries=places&callback=initAutocomplete" async defer></script>
+</body>
+
+</html>
