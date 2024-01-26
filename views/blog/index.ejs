@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>@Khanos Fun Stuff</title>
+  <link type="text/css" rel="stylesheet" href="https://localhost:3000/styles/bootstrap.min.css">
+  <link type="text/css" rel="stylesheet" href="https://localhost:3000/dependencies/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link type="text/css" rel="stylesheet" href="https://localhost:3000/styles/main.css">
+</head>
+<body>
+  <div class="container">
+    <% posts.forEach((post) => { %>
+      <div class="post card my-3">
+        <div class="card-body">
+          <h2 class="card-title"><%= post.title %></h2>
+          <p class="card-text"><%= post.content %></p>
+          <p>Likes: <%= post.likes[0] && post.likes[0].like || 0 %> Dislikes: <%= post.likes[0] && post.likes[0].dislike || 0 %></p>
+          <button data-postid="<%= post.id %>" class="like-button btn btn-primary">Like</button>
+          <button data-postid="<%= post.id %>" class="dislike-button btn btn-secondary">Dislike</button>
+          <div class="comments mt-3">
+            <% post.comments && post.comments.forEach(item => { %>
+              <div class="comment card my-2">
+                <div class="card-body">
+                  <p class="card-text"><%= item.comment %></p>
+                </div>
+              </div>
+            <% }); %>
+            <form action="/api/comment" method="post" class="my-3">
+              <input type="hidden" name="postId" value="<%= post.id %>">
+              <div class="form-group">
+                <textarea name="comment" class="form-control" placeholder="Your comment"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+    <form action="/api/post" method="post" class="my-3">
+      <div class="form-group">
+        <input type="text" name="title" class="form-control" placeholder="Title">
+      </div>
+      <div class="form-group">
+        <textarea name="content" class="form-control" placeholder="Content"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Create Post</button>
+    </form>
+  </div>
+  <script>
+    document.querySelectorAll('.like-button').forEach(item => {
+      item.addEventListener('click', async (event) => {
+        const postId = event.target.dataset.postid;
+        try {
+          const response = await fetch('/api/like', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              postId: postId
+            })
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          location.reload();
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    });
+  
+    document.querySelectorAll('.dislike-button').forEach(item => {
+      item.addEventListener('click', async (event) => {
+        const postId = event.target.dataset.postid;
+        try {
+          const response = await fetch('/api/dislike', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              postId: postId
+            })
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          location.reload();
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
